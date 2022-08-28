@@ -155,11 +155,11 @@ void simulate_water(int grid[sizeX][sizeY],int x,int y){
   grid[y+1][x+1] = sand;
  }
  else if(x > 0 && grid[y][x-1] == dead){
- 	grid[x][y] = dead;
+ 	grid[y][x] = dead;
  	grid[y][x-1] = water;
  }
  else if(x < sizeX - 1 && grid[y][x+1] == dead){
- 	grid[x][y] = dead;
+ 	grid[y][x] = dead;
  	grid[y][x+1] = water;
  }
 }
