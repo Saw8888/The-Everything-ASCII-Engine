@@ -249,4 +249,3 @@ int main(void){
   printf("FPS: %f\n",FPS);
  }
 }
-
