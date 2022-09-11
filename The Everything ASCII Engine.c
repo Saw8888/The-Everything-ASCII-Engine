@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <conio.h>
 #include <stdlib.h>
+#include <time.h>
 #include <windows.h>
 
 int playerX = 10;
@@ -22,7 +23,7 @@ int itemChoice = 2;
 
 int grid[20][20];
 
-void draw_screen(float percentage){
+void draw_screen(){
  system("cls");
  int y,x;
  for(y=0;y<sizeY;y++){
@@ -53,10 +54,8 @@ void draw_screen(float percentage){
    }
   }
   SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN);
+
   if(y == 1){
-  	printf("%f%% COMPLETED", percentage);
-  }
-  if(y == 2){
   	switch(itemChoice){
   		case 2:
   	  printf("Current Item : sand");
@@ -219,12 +218,13 @@ void simulate_water(int grid[sizeX][sizeY],int x,int y){
 }
 
 int main(void){
- int iterations,x,y;
+ int x,y;
+ float frameTime, FPS;
  grid[playerY][playerX]=player;
  
- for(iterations=0;iterations<1000;iterations++){
+ while(1){
+ 	clock_t start = clock();
   keyboardInput();
-  float percentage = (float)iterations/1000*100;
   for(y=sizeY-1;y>=0;y--){
    for(x=sizeX-1;x>=0;x--){
    	if(grid[y][x] == player){
@@ -241,7 +241,12 @@ int main(void){
     	simulate_acid(grid, x, y);
     }
    }
-  }
-  draw_screen(percentage);
+  }  
+  draw_screen();
+  clock_t stop = clock();
+  frameTime = (float)(stop - start) / CLOCKS_PER_SEC;
+  FPS = 1.0 / frameTime;
+  printf("FPS: %f\n",FPS);
  }
 }
+
