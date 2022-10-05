@@ -307,7 +307,7 @@ int main(void){
 	   printf("Current Item : water");
 	   break;
 	  case 4:
-	  	printf("Current Item : acid ");
+	  	printf("Current Item : acid");
 		  break;
 	  case 1:
     printf("Current Item : stone");
