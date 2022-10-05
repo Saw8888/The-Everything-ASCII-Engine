@@ -16,6 +16,7 @@ int playerY = 0;
 
 const int sizeX = 20;
 const int sizeY = 20;
+
 const int dead = 0;
 const int stone = 1;
 const int sand = 2;
@@ -24,33 +25,30 @@ const int acid = 4;
 const int player = 99;
 
 
-int counter0,counter1,counter2,counter3,counter4;
+int counter0,counter1,counter2,counter3,counter4; //We make a counter for each particle for the RLE algorithm to determine how long to make the string and what colour
 
 char ch;
 int randNum;
 int dieProb;
 int itemChoice = 2;
 
-long frame = 0;
+int frame = 0;
 
 int grid[20][20];
-int old_grid[20][20];
+int old_grid[20][20]; //To compare and see if there are any changes compared to the new grid
 int grid_similarity = 0;
 
-void clearScreen(){ 
- COORD cursorPosition;  cursorPosition.X = 0;   cursorPosition.Y = 0;   SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), cursorPosition);
-}
-
-void goTo(int x, int y) { 
+void goTo(int x, int y) { //To move the cursor
  COORD pos = {x, y};
  HANDLE output = GetStdHandle(STD_OUTPUT_HANDLE);
  SetConsoleCursorPosition(output, pos);
 }
 
-void print_chars(unsigned int number_of_spaces, char character, char color[]){
+void print_chars(int number_of_spaces, char character, char color[]){ //Prints x number of spaces
   char* spaces = malloc(sizeof(char)*number_of_spaces + 1);
   memset (spaces,character,number_of_spaces);
   spaces[number_of_spaces] = '\0';
+  //Colour options
   if(color == "GREEN"){SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), BACKGROUND_GREEN);}
   if(color == "RED"){SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), BACKGROUND_RED);}
   if(color == "BLUE"){SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), BACKGROUND_BLUE);}
@@ -298,9 +296,9 @@ int main(void){
   clock_t stop = clock();
   frameTime = (float)(stop - start) / CLOCKS_PER_SEC;
   FPS = 1.0 / frameTime;
-  goTo(21,1);
+  goTo(100,1);
   printf("FPS: %f\n",FPS);
-  goTo(21,0);
+  goTo(100,0);
   switch(itemChoice){
 	 	case 2:
 	   printf("Current Item : sand");
