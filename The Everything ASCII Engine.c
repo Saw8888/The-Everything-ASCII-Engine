@@ -1,10 +1,6 @@
 #include <stdio.h>
 #include <conio.h>
 #include <time.h>
-#include <windows.h>
-
-#include <unistd.h>
-#define szstr(str) str,sizeof(str)
 
 #ifdef __unix__
 # include <unistd.h>
@@ -12,8 +8,6 @@
 # include <windows.h>
 #define sleep(x) Sleep(1000 * (x))
 #endif
-
-#define fmt(style) "\x1b[" style "m"
 
 int playerX = 10;
 int playerY = 0;
