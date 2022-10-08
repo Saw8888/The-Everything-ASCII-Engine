@@ -3,6 +3,9 @@
 #include <time.h>
 #include <windows.h>
 
+#include <unistd.h>
+#define szstr(str) str,sizeof(str)
+
 #ifdef __unix__
 # include <unistd.h>
 #elif defined _WIN32
@@ -10,12 +13,13 @@
 #define sleep(x) Sleep(1000 * (x))
 #endif
 
+#define fmt(style) "\x1b[" style "m"
 
 int playerX = 10;
 int playerY = 0;
 
-const int sizeX = 20;
-const int sizeY = 20;
+#define sizeX 20
+#define sizeY 20
 
 const int dead = 0;
 const int stone = 1;
@@ -38,10 +42,13 @@ int grid[20][20];
 int old_grid[20][20]; //To compare and see if there are any changes compared to the new grid
 int grid_similarity = 0;
 
-void goTo(int x, int y) { //To move the cursor
- COORD pos = {x, y};
- HANDLE output = GetStdHandle(STD_OUTPUT_HANDLE);
- SetConsoleCursorPosition(output, pos);
+void goTo(int x,int y){printf("%c[%d;%df",0x1B,y,x);}
+
+void colorChar(char rgb[]){
+	char color[12] = "\x1b[48;2;";
+ strcat(color,rgb);
+ strcat(color,"m");
+	printf(color);
 }
 
 void print_chars(int number_of_spaces, char character, char color[]){ //Prints x number of spaces
@@ -49,12 +56,12 @@ void print_chars(int number_of_spaces, char character, char color[]){ //Prints x
   memset (spaces,character,number_of_spaces);
   spaces[number_of_spaces] = '\0';
   //Colour options
-  if(color == "GREEN"){SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), BACKGROUND_GREEN);}
-  if(color == "RED"){SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), BACKGROUND_RED);}
-  if(color == "BLUE"){SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), BACKGROUND_BLUE);}
-	 if(color == "WHITE"){SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), BACKGROUND_RED | BACKGROUND_BLUE | BACKGROUND_GREEN);}
-  if(color == "BLACK"){SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), BACKGROUND_RED/255 | BACKGROUND_BLUE/255 | BACKGROUND_GREEN/255);}
-  if(color == "YELLOW"){SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), BACKGROUND_RED | BACKGROUND_GREEN);}
+  if(color == "GREEN"){colorChar("0;255;0");}
+  if(color == "RED"){colorChar("255;0;0");}
+  if(color == "BLUE"){colorChar("0;0;255");}
+	 if(color == "WHITE"){colorChar("255;255;255");}
+  if(color == "BLACK"){colorChar("0;0;0");}
+  if(color == "YELLOW"){colorChar("255;255;0");}
   fputs(spaces, stdout);
   free(spaces);
 }
@@ -296,21 +303,21 @@ int main(void){
   clock_t stop = clock();
   frameTime = (float)(stop - start) / CLOCKS_PER_SEC;
   FPS = 1.0 / frameTime;
-  goTo(100,1);
+  goTo(100,2);
   printf("FPS: %f\n",FPS);
   goTo(100,0);
   switch(itemChoice){
 	 	case 2:
-	   printf("Current Item : sand");
+	   printf("Current Item : sand ");
 	   break;
 	 	case 3:
-	   printf("Current Item : water");
+	   printf("Current Item : water ");
 	   break;
 	  case 4:
 	  	printf("Current Item : acid ");
 		  break;
 	  case 1:
-    printf("Current Item : stone");
+    printf("Current Item : stone ");
     break;
 	 }
 	 if(frame == 0){
