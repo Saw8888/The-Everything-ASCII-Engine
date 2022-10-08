@@ -112,7 +112,6 @@ void draw_screen(){
 			  grid_similarity = 0;
 		 }
 		}
-	 SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN);
 	 printf("\n");
  }
 }
