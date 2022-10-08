@@ -31,9 +31,10 @@ int dieProb;
 int itemChoice = 2;
 
 int frame = 0;
+int run = 1;
 
-int grid[20][20];
-int old_grid[20][20]; //To compare and see if there are any changes compared to the new grid
+int grid[sizeY][sizeX];
+int old_grid[sizeY][sizeX]; //To compare and see if there are any changes compared to the new grid
 int grid_similarity = 0;
 
 void goTo(int x,int y){printf("%c[%d;%df",0x1B,y,x);}
@@ -58,6 +59,18 @@ void print_chars(int number_of_spaces, char character, char color[]){ //Prints x
   if(color == "YELLOW"){colorChar("255;255;0");}
   fputs(spaces, stdout);
   free(spaces);
+}
+
+void cleanup(){
+	printf("\x1b[2J");//clean up the alternate buffer
+	printf("\x1b[?1049l");	//switch back to the normal buffer
+	printf("\x1b[?25h"); //show the cursor again
+}
+
+void setup(){
+	printf("\x1b[?1049h");
+ printf("\x1b[2J");
+	printf("\x1b[?25l");
 }
 
 void draw_screen(){
@@ -138,7 +151,12 @@ void keyboardInput(){
        
 				case 's':
 				 	if(playerY < sizeY-1 && grid[playerY+1][playerX]==dead){playerY++;}
-				 break;
+		 		 break;
+				
+				case 'q':
+					run = 0;
+					break;
+					
 				   
 				case '1':
 				 itemChoice = stone;
@@ -232,10 +250,6 @@ void simulate_water(int x,int y){
  if(grid[y][x] == dead || y >= sizeY - 1){ // do nothing if dead or already at the bottom of the screen
   return;
  }
- else if(grid[y+1][x] > 0 && grid[y+1][x+1] > 0 && grid[y+1][x-1] > 0 && grid[y][x+1] > 0 && grid[y][x-1] > 0 && randNum == 1){
- 	grid[y][x] = dead;
- 	grid[y-1][x] = water;
- }
  else if(grid[y+1][x] == dead){ // move down if empty
   grid[y][x] = dead;
   grid[y+1][x] = water;
@@ -263,9 +277,9 @@ int main(void){
  float frameTime, FPS;
  
  grid[playerY][playerX]=player;
-
  
- while(1){
+ setup();
+ while(run == 1){
  	clock_t start = clock();
   keyboardInput();
   
@@ -297,6 +311,7 @@ int main(void){
   frameTime = (float)(stop - start) / CLOCKS_PER_SEC;
   FPS = 1.0 / frameTime;
   goTo(100,2);
+  colorChar("0;0;0");
   printf("FPS: %f\n",FPS);
   goTo(100,0);
   switch(itemChoice){
@@ -317,4 +332,5 @@ int main(void){
 	 	frame = 1;
 	 }
  }
+ cleanup();
 }
