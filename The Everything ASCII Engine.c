@@ -2,12 +2,8 @@
 #include <conio.h>
 #include <time.h>
 
-#ifdef __unix__
-# include <unistd.h>
-#elif defined _WIN32
-# include <windows.h>
+#include <windows.h>
 #define sleep(x) Sleep(1000 * (x))
-#endif
 
 int playerX = 10;
 int playerY = 0;
