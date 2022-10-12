@@ -39,32 +39,32 @@ int grid_similarity = 0;
 
 void goTo(int x,int y){printf("%c[%d;%df",0x1B,y,x);}
 
-void colorChar(char rgb[]){
-	char color[12] = "\x1b[48;2;";
- strcat(color,rgb);
- strcat(color,"m");
-	printf(color);
+void colorChar(int r, int g, int b){
+	printf("\x1b[48;2;%d;%d;%dm",r,g,b);
 }
 
-void print_chars(int number_of_spaces, char character, char color[]){ //Prints x number of spaces
+void print_chars(int number_of_spaces, char character, int r, int g, int b){ //Prints x number of spaces
   char* spaces = malloc(sizeof(char)*number_of_spaces + 1);
   memset (spaces,character,number_of_spaces);
   spaces[number_of_spaces] = '\0';
-  //Colour options
-  if(color == "GREEN"){colorChar("0;255;0");}
-  if(color == "RED"){colorChar("255;0;0");}
-  if(color == "BLUE"){colorChar("0;0;255");}
-	 if(color == "WHITE"){colorChar("255;255;255");}
-  if(color == "BLACK"){colorChar("0;0;0");}
-  if(color == "YELLOW"){colorChar("255;255;0");}
+  //Colour option
+  colorChar(r,g,b);
   fputs(spaces, stdout);
   free(spaces);
+}
+
+void fullscreen(){
+ keybd_event(VK_MENU, 0x38, 0, 0);
+ keybd_event(VK_RETURN, 0x1c, 0, 0);
+ keybd_event(VK_RETURN, 0X1c, KEYEVENTF_KEYUP, 0);
+ keybd_event(VK_MENU, 0x38, KEYEVENTF_KEYUP, 0);
 }
 
 void cleanup(){
 	printf("\x1b[2J");//clean up the alternate buffer
 	printf("\x1b[?1049l");	//switch back to the normal buffer
 	printf("\x1b[?25h"); //show the cursor again
+	printf("\x1b[48;2;12;12;12m"); //Return to the black colour
 }
 
 void setup(){
@@ -87,40 +87,40 @@ void draw_screen(){
 			  if(grid[y][x] == dead){
 		   counter0++;
 		   if(grid[y][x+1] != 0 || x+1 >= sizeX){
-		    print_chars(counter0, ' ', "BLACK");
+		    print_chars(counter0, ' ', 12,12,12);
 		    counter0 = 0;
 		   }
 		  }
 			  else if(grid[y][x] == stone){
 		   counter1++;
 		   if(grid[y][x+1] != 1 || x+1 >= sizeX){
-		    print_chars(counter1, ' ', "WHITE");
+		    print_chars(counter1, ' ', 255,255,255);
 		    counter1 = 0;
 		   }
 		  }
 			  else if(grid[y][x] == sand){
 		   counter2++;
 		   if(grid[y][x+1] != 1 || x+1 >= sizeX){
-		    	print_chars(counter2, ' ', "YELLOW");
+		    	print_chars(counter2, ' ', 255,255,0);
 		    counter2 = 0;
 		   }
 		  }
 			  else if(grid[y][x] == water){
 		   counter3++;
 		   if(grid[y][x+1] != 1 || x+1 >= sizeX){
-		    print_chars(counter3, ' ', "BLUE");
+		    print_chars(counter3, ' ', 0,0,255);
 		    counter3 = 0;
 		   }
 		  }
 			  else if(grid[y][x] == acid){
 		   counter4++;
 		   if(grid[y][x+1] != 1 || x+1 >= sizeX){
-		    print_chars(counter4, ' ', "GREEN");
+		    print_chars(counter4, ' ', 0,255,0);
 		    counter4 = 0;
 		   }
 		  }
 			  else if(grid[y][x] == player){
-		   print_chars(1, ' ', "RED");
+		   print_chars(1, ' ', 255,0,0);
 		  }
 			  grid_similarity = 0;
 		 }
@@ -278,6 +278,7 @@ int main(void){
  
  grid[playerY][playerX]=player;
  
+ fullscreen();
  setup();
  while(run == 1){
  	clock_t start = clock();
@@ -311,7 +312,7 @@ int main(void){
   frameTime = (float)(stop - start) / CLOCKS_PER_SEC;
   FPS = 1.0 / frameTime;
   goTo(100,2);
-  colorChar("0;0;0");
+  colorChar(12,12,12);
   printf("FPS: %f\n",FPS);
   goTo(100,0);
   switch(itemChoice){
@@ -332,5 +333,6 @@ int main(void){
 	 	frame = 1;
 	 }
  }
+ fullscreen();
  cleanup();
 }
